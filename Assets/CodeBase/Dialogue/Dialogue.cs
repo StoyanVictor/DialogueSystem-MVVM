@@ -4,5 +4,4 @@
 public class Dialogue : ScriptableObject
 {
     public DialogueNode dialogueNodes;
-    
 }
