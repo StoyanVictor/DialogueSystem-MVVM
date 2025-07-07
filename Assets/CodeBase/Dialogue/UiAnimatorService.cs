@@ -1,6 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
-public class UiAnimator 
+public class UiAnimatorService 
 {
     public void ScaleOutIn(Transform gameObjectTransform,float animationTime)
     {

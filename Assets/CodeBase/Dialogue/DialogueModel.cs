@@ -3,10 +3,8 @@
 public class DialogueModel
 {
     private DialogueNode _currentDialogueNode;
-    private string _dialogueLine;
     public event Action onDialogueStarts;
     public event Action onDialogueEnds;
-
     public string GetCurrentDialogueLine() => _currentDialogueNode.speakLine;
     public DialogueNode GetCurrentNode() => _currentDialogueNode;   
     public void SetCurrentNode(DialogueNode node) => _currentDialogueNode = node;

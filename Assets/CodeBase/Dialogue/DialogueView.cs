@@ -10,22 +10,44 @@ public class DialogueView : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _dialogueText;
     [SerializeField] private Image _bg;
     
-    private UiAnimator _uiAnimator;
+    private UiAnimatorService _uiAnimatorService;
     private DialogueViewModel _dialogueViewModel;
     public void SpawnNodeButtons(DialogueNode dialogueNode)
     {
         _buttonPrefab.transform.localScale = new Vector3(0, 0, 0);
-        for (int i = 0; i < dialogueNode.dialogueNodes.Count; i++)
+        for (int i = 0; i < dialogueNode.choices.Count; i++)
         {
             var buttonObject = Instantiate(_buttonPrefab,_buttonsParent);
-            _uiAnimator.ScaleOutIn(buttonObject.transform,0.7f);
-            var node = buttonObject.GetComponent<NodeButton>();
-            node._buttonNode = dialogueNode.dialogueNodes[i];
-            node._buttonText.text = dialogueNode.dialogueNodes[i].nodeText;
+            _uiAnimatorService.ScaleOutIn(buttonObject.transform,0.7f);
+            var choiceButton = buttonObject.GetComponent<ChoiceButton>();
+            choiceButton._choice = dialogueNode.choices[i];
+            choiceButton._buttonText.text = dialogueNode.choices[i].choiceText;
             var button = buttonObject.GetComponent<Button>();
-            button.onClick.AddListener(() => OpenCurrentNode(node._buttonNode));
+            button.onClick.AddListener(() => ChoiceConfirming(choiceButton._choice));
         }
     }
+
+    private void ChoiceConfirming(Choice choice)
+    {
+        if (choice.choiceType == ChoiceType.DialogueNode)
+        {
+            OpenCurrentNode(choice.dialogueNode);
+        }
+
+        if (choice.choiceType == ChoiceType.Quest)
+        {
+            ClearParent(_buttonsParent);
+            SpawnExitButton();
+            print($"Yeah buddy you got your quest!!!");
+        }
+        if (choice.choiceType == ChoiceType.MoneyGive)
+        {
+            ClearParent(_buttonsParent);
+            print($"Enjoy your 200$!");
+            SpawnExitButton();
+        }
+    }
+
     public void OpenCurrentNode(DialogueNode node)
     {
         _dialogueViewModel.SetCurrentNode(node);
@@ -34,7 +56,7 @@ public class DialogueView : MonoBehaviour
         {
             _dialogueText.text = _dialogueViewModel.GetCurrentSpeakLine();
             _dialogueText.transform.localScale = new Vector3(0, 0, 0);
-            _uiAnimator.ScaleOutIn(_dialogueText.transform,0.5f);
+            _uiAnimatorService.ScaleOutIn(_dialogueText.transform,0.5f);
             ClearParent(_buttonsParent);
             SpawnNodeButtons(_currentDialogueNode);
         }
@@ -55,8 +77,8 @@ public class DialogueView : MonoBehaviour
     private void ExitDialogue()
     {
         _dialogueViewModel.SetCurrentNode(null);
-        _uiAnimator.ScaleInOut(_bg.transform,0.5f);
-        _uiAnimator.DestroyAllTweens(_bg.transform);
+        _uiAnimatorService.ScaleInOut(_bg.transform,0.5f);
+        _uiAnimatorService.DestroyAllTweens(_bg.transform);
         ClearParent(_buttonsParent);
     }
     private void Awake()
@@ -68,7 +90,7 @@ public class DialogueView : MonoBehaviour
     private void InitDialogue()
     {
         _bg.transform.localScale = new Vector3(0, 0, 0);
-        _uiAnimator = new UiAnimator();
+        _uiAnimatorService = new UiAnimatorService();
         _dialogueViewModel = new DialogueViewModel(new DialogueModel());
         _dialogueViewModel.onDialogueBegin += () => ScaleBackground(_bg.transform, 0.4f);
         _dialogueViewModel.onDialogueBegin += () => SpawnNodeButtons(_dialogueData.dialogueNodes);
@@ -77,14 +99,14 @@ public class DialogueView : MonoBehaviour
 
     private void ScaleBackground(Transform gameObjectTransform,float animationTime)
     {
-        _uiAnimator.ScaleOutIn(gameObjectTransform,animationTime);
+        _uiAnimatorService.ScaleOutIn(gameObjectTransform,animationTime);
     }
     private  void ClearParent(Transform parent)
     {
         foreach (Transform obj in parent)
         {
            Destroy(obj.gameObject);
-           _uiAnimator.DestroyAllTweens(obj);
+           _uiAnimatorService.DestroyAllTweens(obj);
         }
     }
 }

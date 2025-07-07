@@ -805,7 +805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68a4f71650b406fb1762713582c6f0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogueData: {fileID: 11400000, guid: 559ecfaa489a8884cae0c54b6bdcbb4c, type: 2}
+  _dialogueData: {fileID: 11400000, guid: e63e0c0fc5b89e94184542c9e9583cd5, type: 2}
   _buttonPrefab: {fileID: 8548780460301219441, guid: 2c4226040a946c244ac2f8f21fc12c47,
     type: 3}
   _exitButtonPrefab: {fileID: 8548780460301219441, guid: 4a0983a6d5919a4489d5ded2d51c5b84,
